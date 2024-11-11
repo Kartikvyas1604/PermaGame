@@ -5,7 +5,7 @@ import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "./enemies.js";
 import { UI } from "./UI.js";
 import { storeData } from "./arweave/walletConnect.js";
 import { getHighScore } from "./arweave/arweaveHelper.js";
-//import './style.css';
+import './style.css';
 
 const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
