@@ -1,4 +1,3 @@
-// Initialize Arweave instance
 export const arweave = Arweave.init({
   host: 'arweave.net',
   port: 443,
@@ -15,6 +14,9 @@ let walletInstance = null;
 async function checkWalletConnection() {
   if (typeof window.arweaveWallet !== 'undefined') {
     try {
+      // Request permission to access the wallet address
+      await window.arweaveWallet.connect(['ACCESS_ADDRESS']);
+      
       // Attempt to get the active wallet address
       walletInstance = await window.arweaveWallet.getActiveAddress();
       if (walletInstance) {
@@ -34,7 +36,7 @@ async function checkWalletConnection() {
   }
 }
 
-// Event listener to connect wallet when the button is clicked
+
 if (arweaveWalletButton) {
   arweaveWalletButton.addEventListener('click', () => {
     if (!walletInstance) {
@@ -45,7 +47,7 @@ if (arweaveWalletButton) {
   console.error('arweave-wallet button not found in the DOM.');
 }
 
-// Function to store data on Arweave
+
 export async function storeData(data) {
   if (!walletInstance) {
     alert('Please connect your wallet first.');
@@ -73,6 +75,4 @@ export async function storeData(data) {
     alert('Error storing data on Arweave');
   }
 }
-
-// Check for wallet connection when the page loads
 checkWalletConnection();
