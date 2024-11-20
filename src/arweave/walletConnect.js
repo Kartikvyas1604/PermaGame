@@ -13,7 +13,7 @@ const arweaveWalletButton = document.getElementById('arweave-wallet');
 let walletInstance = null;
 
 // Function to check for arweaveWallet and connect
-async function checkWalletConnection() {
+export async function checkWalletConnection() {
   if (typeof window.arweaveWallet !== 'undefined') {
     try {
       // Request permission to access the wallet address
@@ -38,7 +38,7 @@ async function checkWalletConnection() {
   }
 }
 
-
+// Ensure the button triggers wallet connection
 if (arweaveWalletButton) {
   arweaveWalletButton.addEventListener('click', () => {
     if (!walletInstance) {
@@ -48,33 +48,3 @@ if (arweaveWalletButton) {
 } else {
   console.error('arweave-wallet button not found in the DOM.');
 }
-
-
-export async function storeData(data) {
-  if (!walletInstance) {
-    alert('Please connect your wallet first.');
-    return;
-  }
-
-  try {
-    // Create a transaction to store data on Arweave
-    const transaction = await arweave.createTransaction({ data: data });
-    transaction.addTag('App-Name', 'GameHighScore');
-    transaction.addTag('Content-Type', 'text/plain');
-
-    // Sign the transaction with the connected wallet
-    await arweave.transactions.sign(transaction);
-
-    // Post the transaction to Arweave
-    const response = await arweave.transactions.post(transaction);
-    if (response.status === 200) {
-      alert('Data stored successfully on Arweave!');
-    } else {
-      alert('Failed to store data on Arweave');
-    }
-  } catch (err) {
-    console.error('Error storing data on Arweave:', err);
-    alert('Error storing data on Arweave');
-  }
-}
-checkWalletConnection();

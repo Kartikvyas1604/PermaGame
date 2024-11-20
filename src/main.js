@@ -1,10 +1,9 @@
-import Player  from "./player.js";
+import Player from "./player.js";
 import { InputHandler } from "./input.js";
 import { Background } from "./background.js";
 import { FlyingEnemy, ClimbingEnemy, GroundEnemy } from "./enemies.js";
 import { UI } from "./UI.js";
-import { storeData } from "./arweave/walletConnect.js";
-import { getHighScore } from "./arweave/arweaveHelper.js";
+import { checkWalletConnection } from "./arweave/walletConnect.js";
 import './style.css';
 
 const canvas = document.getElementById("canvas1");
@@ -16,21 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const arweaveWalletButton = document.getElementById("arweave-wallet");
   if (arweaveWalletButton) {
     arweaveWalletButton.addEventListener("click", async () => {
-      const highScore = await getHighScore();
-      document.getElementById(
-        "highscore-display"
-      ).textContent = `High Score: ${highScore}`;
+      await checkWalletConnection();
       startGame();
     });
   }
 });
 
-async function startGame() {
-  const highScore = await getHighScore();
-  document.getElementById(
-    "highscore-display"
-  ).textContent = `High Score: ${highScore}`;
-
+function startGame() {
   class Game {
     constructor(width, height) {
       this.width = width;
@@ -62,7 +53,7 @@ async function startGame() {
       this.boost = 500;
     }
 
-    async update(deltaTime) {
+    update(deltaTime) {
       this.time += deltaTime;
       if (this.time > this.maxTime) this.gameOver = true;
 
@@ -76,10 +67,6 @@ async function startGame() {
         this.enemyTimer += deltaTime;
       }
       this.enemies.forEach((enemy) => enemy.update(deltaTime));
-
-      if (this.gameOver) {
-        await storeData(this.score.toString());
-      }
     }
 
     draw(context) {
